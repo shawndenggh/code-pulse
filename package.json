@@ -17,6 +17,7 @@
     "typescript": "^5.4.4"
   },
   "dependencies": {
+    "@casl/ability": "^6.7.1",
     "fractional-index": "^1.0.0"
   }
 }
