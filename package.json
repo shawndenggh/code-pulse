@@ -7,7 +7,8 @@
     "dev": "npx nodemon --exec ts-node src/index.ts",
     "fi": "npx nodemon --exec ts-node src/fractional-index-test/index.ts",
     "casl": "npx nodemon --exec ts-node src/casl/index.ts",
-    "cancan": "npx nodemon --exec ts-node src/cancan/index.ts"
+    "cancan": "npx nodemon --exec ts-node src/cancan/index.ts",
+    "mobx": "npx nodemon --exec ts-node src/mobx/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +23,7 @@
   "dependencies": {
     "@casl/ability": "^6.7.1",
     "cancan": "^3.1.0",
-    "fractional-index": "^1.0.0"
+    "fractional-index": "^1.0.0",
+    "mobx": "^6.12.3"
   }
 }
