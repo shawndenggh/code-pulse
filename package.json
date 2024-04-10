@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
+    "lint": "eslint .",
     "dev": "npx nodemon --exec ts-node src/index.ts",
     "fi": "npx nodemon --exec ts-node src/fractional-index-test/index.ts",
     "casl": "npx nodemon --exec ts-node src/casl/index.ts",
@@ -14,11 +16,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@eslint/js": "^9.0.0",
     "@types/cancan": "^3.1.5",
     "@types/node": "^20.12.7",
+    "eslint": "^9.0.0",
     "nodemon": "^3.1.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.4",
+    "typescript-eslint": "^7.6.0",
     "vitest": "^1.4.0"
   },
   "dependencies": {
@@ -26,5 +31,8 @@
     "cancan": "^3.1.0",
     "fractional-index": "^1.0.0",
     "mobx": "^6.12.3"
+  },
+  "engines": {
+    "node": ">= 20"
   }
 }
