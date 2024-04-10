@@ -8,6 +8,9 @@
 *.dll
 *.exe
 
+src/*.js
+src/**/*.js
+
 # Ignore build output directories
 /bin/
 /build/
