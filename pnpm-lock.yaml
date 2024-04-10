@@ -8,11 +8,17 @@ dependencies:
   '@casl/ability':
     specifier: ^6.7.1
     version: 6.7.1
+  cancan:
+    specifier: ^3.1.0
+    version: 3.1.0
   fractional-index:
     specifier: ^1.0.0
     version: 1.0.0
 
 devDependencies:
+  '@types/cancan':
+    specifier: ^3.1.5
+    version: 3.1.5
   '@types/node':
     specifier: ^20.12.7
     version: 20.12.7
@@ -73,6 +79,10 @@ packages:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
     dev: true
 
+  /@types/cancan@3.1.5:
+    resolution: {integrity: sha512-JeGlwatVgDdk4OrT3MiuTB541otIvebEpmIExttn48GHpzSJD/WRESI783oVUtwgzvDxj77wLM0lYt7Q7L28Og==}
+    dev: true
+
   /@types/node@20.12.7:
     resolution: {integrity: sha512-wq0cICSkRLVaf3UGLMGItu/PtdY7oaXaI/RVU+xliKVOtRna3PRY57ZDfztpDL0n11vfymMUnXv8QwYCO7L1wg==}
     dependencies:
@@ -130,6 +140,16 @@ packages:
     resolution: {integrity: sha512-58S9QDqG0Xx27YwPSt9fJxivjYl432YCwfDMfZ+71RAqUrZef7LrKQZ3LHLOwCS4FLNBplP533Zx895SeOCHvA==}
     dev: true
 
+  /arrify@1.0.1:
+    resolution: {integrity: sha512-3CYzex9M9FGQjCGMGyi6/31c8GJbgb0qGyrx5HWxPd0aCwh4cB2YjMb2Xf9UuoogrMrlO9cTqnB5rI5GHZTcUA==}
+    engines: {node: '>=0.10.0'}
+    dev: false
+
+  /auto-bind@1.2.1:
+    resolution: {integrity: sha512-/W9yj1yKmBLwpexwAujeD9YHwYmRuWFGV8HWE7smQab797VeHa4/cnE2NFeDhA+E+5e/OGBI8763EhLjfZ/MXA==}
+    engines: {node: '>=4'}
+    dev: false
+
   /balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
     dev: true
@@ -152,6 +172,15 @@ packages:
     dependencies:
       fill-range: 7.0.1
     dev: true
+
+  /cancan@3.1.0:
+    resolution: {integrity: sha512-Glz6HEEOfQ5Cv5yWx2Zu4zPtDBJzNcIAE/pSzE3XTncA2ZvfwA5w8wLvJ455Ud4qKEGpHay4Z0KduGNWCoKPXA==}
+    engines: {node: '>= 4'}
+    dependencies:
+      arrify: 1.0.1
+      auto-bind: 1.2.1
+      is-plain-obj: 1.1.0
+    dev: false
 
   /chokidar@3.6.0:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
@@ -252,6 +281,11 @@ packages:
     resolution: {integrity: sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==}
     engines: {node: '>=0.12.0'}
     dev: true
+
+  /is-plain-obj@1.1.0:
+    resolution: {integrity: sha512-yvkRyxmFKEOQ4pNXCmJG5AEQNlXJS5LaONXo5/cLdTZdWvsZ1ioJEonLGAosKlMWE8lwUy/bJzMjcw8az73+Fg==}
+    engines: {node: '>=0.10.0'}
+    dev: false
 
   /lru-cache@6.0.0:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
