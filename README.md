@@ -1,10 +1,10 @@
-# Code-Pulse
+# Node-Pulse
 
 A nodejs learning
 
 ## Table of Contents
 
-- [Code-Pulse](#code-pulse)
+- [Node-Pulse](#code-pulse)
   - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
   - [Features](#features)
