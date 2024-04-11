@@ -1,9 +1,17 @@
-import { createMongoAbility } from "@casl/ability";
+import defineAbilityFor from './acl/node-acl';
+import {Node} from "./model/node";
+import {Member} from "./model/member";
+import {Permission} from "./model/unit";
 
-type Actions = "create" | "read" | "update" | "delete";
-type Subjects = "Article" | "Comment" | "User";
+const unit = new Member("1", "admin", Permission.READ);
+const ability = defineAbilityFor(unit);
 
-const ability = createMongoAbility<[Actions, Subjects]>();
+const node = new Node("unknown-file");
 
-const readArticle = ability.can("read", "Article");
-console.log(`readArticle: ${readArticle}`)
+const canReadFile = ability.can("read", node);
+
+console.log(`canReadFile: ${canReadFile}`)
+
+const canUpdateFile = ability.can("update", node);
+
+console.log(`canUpdateFile: ${canUpdateFile}`)
