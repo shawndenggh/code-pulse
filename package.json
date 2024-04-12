@@ -16,7 +16,6 @@
   "license": "ISC",
   "devDependencies": {
     "@eslint/js": "^9.0.0",
-    "@types/cancan": "^3.1.5",
     "@types/node": "^20.12.7",
     "eslint": "^9.0.0",
     "nodemon": "^3.1.0",

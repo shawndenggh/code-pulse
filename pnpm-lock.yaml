@@ -22,9 +22,6 @@ devDependencies:
   '@eslint/js':
     specifier: ^9.0.0
     version: 9.0.0
-  '@types/cancan':
-    specifier: ^3.1.5
-    version: 3.1.5
   '@types/node':
     specifier: ^20.12.7
     version: 20.12.7
@@ -513,10 +510,6 @@ packages:
 
   /@tsconfig/node16@1.0.4:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
-    dev: true
-
-  /@types/cancan@3.1.5:
-    resolution: {integrity: sha512-JeGlwatVgDdk4OrT3MiuTB541otIvebEpmIExttn48GHpzSJD/WRESI783oVUtwgzvDxj77wLM0lYt7Q7L28Og==}
     dev: true
 
   /@types/estree@1.0.5:
