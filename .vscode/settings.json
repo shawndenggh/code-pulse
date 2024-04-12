@@ -1,6 +1,7 @@
 {
-    "cSpell.words": [
-        "casl",
-        "tseslint"
-    ]
+  "cSpell.words": [
+    "casl",
+    "tseslint"
+  ],
+  "editor.formatOnSave": true
 }
