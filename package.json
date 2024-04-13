@@ -32,7 +32,8 @@
     "cancan": "^3.1.0",
     "fractional-index": "^1.0.0",
     "lodash": "^4.17.21",
-    "mobx": "^6.12.3"
+    "mobx": "^6.12.3",
+    "zod": "^3.22.4"
   },
   "engines": {
     "node": ">= 20"
