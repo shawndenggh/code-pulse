@@ -5,23 +5,23 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "dev": "npx nodemon --exec ts-node src/index.ts",
-    "fi": "npx nodemon --exec ts-node src/fractional-index-test/index.ts",
-    "casl": "npx nodemon --exec ts-node src/casl/index.ts",
-    "cancan": "npx nodemon --exec ts-node src/cancan/index.ts",
-    "mobx": "npx nodemon --exec ts-node src/mobx/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "fi": "tsx watch src/fractional-index-test/index.ts",
+    "casl": "tsx watch src/casl/index.ts",
+    "cancan": "tsx watch src/cancan/index.ts",
+    "mobx": "tsx watch src/mobx/index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "type": "module",
   "devDependencies": {
     "@eslint/js": "^9.0.0",
     "@types/node": "^20.12.7",
     "eslint": "^9.0.0",
     "eslint-config-prettier": "^9.1.0",
-    "nodemon": "^3.1.0",
     "prettier": "3.2.5",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.7.2",
     "typescript": "^5.4.4",
     "typescript-eslint": "^7.6.0",
     "vitest": "^1.4.0"

@@ -1,4 +1,5 @@
 import CanCan from 'cancan';
+import { Unit } from './model/unit';
 
 const cancan = new CanCan();
 const { allow, can, cannot, authorize, abilities } = cancan;
@@ -25,6 +26,8 @@ class Article {
     return this._name;
   }
 }
+
+const user1 = new User('shawn');
 
 allow(User, 'read', Article);
 

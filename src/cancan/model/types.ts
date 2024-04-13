@@ -1,1 +1,1 @@
-export type NodeAction = 'createNode' | 'readNode' | 'updateNode' | 'deleteNode' | 'export node';
+export type NodeAction = 'createNode' | 'readNode' | 'updateNode' | 'deleteNode' | 'exportNode';
