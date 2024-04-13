@@ -1,4 +1,4 @@
-declare module "cancan" {
+declare module 'cancan' {
   namespace CanCan {
     interface Option {
       instanceOf?: ((instance: any, model: any) => boolean) | undefined;

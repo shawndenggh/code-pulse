@@ -1,4 +1,4 @@
-import CanCan from "cancan";
+import CanCan from 'cancan';
 
 const cancan = new CanCan();
 const { allow, can, cannot, authorize, abilities } = cancan;
@@ -26,13 +26,13 @@ class Article {
   }
 }
 
-allow(User, "read", Article);
+allow(User, 'read', Article);
 
-const user = new User("shawn");
-const article = new Article("Animal");
+const user = new User('shawn');
+const article = new Article('Animal');
 
-const canRead = can(user, "read", article);
+const canRead = can(user, 'read', article);
 console.log(`canRead: ${canRead}`);
 
-const canEdit = can(user, "edit", article);
+const canEdit = can(user, 'edit', article);
 console.log(`canEdit: ${canEdit}`);
