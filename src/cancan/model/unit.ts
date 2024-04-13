@@ -1,8 +1,4 @@
-export enum Permission {
-  READ = 'READ',
-  EDIT = 'EDIT',
-  FULL_ACCESS = 'FULL_ACCESS',
-}
+import { Permission } from './types';
 
 export abstract class Unit {
   protected _id: string;

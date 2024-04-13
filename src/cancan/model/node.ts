@@ -12,4 +12,8 @@ export class Node {
   get name(): string {
     return this.id;
   }
+
+  get userId(): string {
+    return '1';
+  }
 }

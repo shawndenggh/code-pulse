@@ -1,41 +1,43 @@
-import CanCan from 'cancan';
-import { Unit } from './model/unit';
+import { Member } from './model/member';
+import { Node } from './model/node';
+import { _abilities, _can, _cannot, _authorize } from './acl/cancan';
+import './acl/node';
 
-const cancan = new CanCan();
-const { allow, can, cannot, authorize, abilities } = cancan;
+export const authorize: typeof _authorize = _authorize;
 
-class User {
-  private readonly _name: string;
+export const can = _can;
 
-  constructor(name: string) {
-    this._name = name;
-  }
+export const cannot = _cannot;
 
-  get name() {
-    return this._name;
-  }
-}
-class Article {
-  private readonly _name: string;
+export const abilities = _abilities;
 
-  constructor(name: string) {
-    this._name = name;
-  }
+const member = new Member('1', 'shawn');
+const node = new Node('node-1');
 
-  get name() {
-    return this._name;
-  }
-}
+export const toVO = (unit: Member, target: Node) => {
+  const output: Record<string, boolean> = {};
 
-const user1 = new User('shawn');
+  abilities.forEach((ability) => {
+    if (unit instanceof ability.model && target instanceof ability.target) {
+      let hasPrivilege = true;
 
-allow(User, 'read', Article);
+      try {
+        hasPrivilege = can(unit, ability.action, target);
+      } catch (err) {
+        hasPrivilege = false;
+      }
 
-const user = new User('shawn');
-const article = new Article('Animal');
+      output[ability.action] = hasPrivilege;
+    }
+  });
+  return output;
+};
 
-const canRead = can(user, 'read', article);
-console.log(`canRead: ${canRead}`);
+const canCreate = can(member, 'createNode', node);
+console.log(`canRead: ${canCreate}`);
 
-const canEdit = can(user, 'edit', article);
+const canEdit = can(member, 'updateNode', node);
 console.log(`canEdit: ${canEdit}`);
+
+const privilegeVO = toVO(member, node);
+console.log(privilegeVO);

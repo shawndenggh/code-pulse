@@ -1,5 +1,5 @@
-import { Team } from "./team";
-import { Unit } from "./unit";
+import { Team } from './team';
+import { Unit } from './unit';
 
 export class Member extends Unit {
   private readonly _name: string;
@@ -15,5 +15,13 @@ export class Member extends Unit {
 
   get teams(): Team[] {
     return [];
+  }
+
+  get isAdmin() {
+    return true;
+  }
+
+  get isGuest() {
+    return false;
   }
 }

@@ -12,7 +12,7 @@
     "mobx": "tsx watch src/mobx/index.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "Shawn",
   "license": "ISC",
   "type": "module",
   "devDependencies": {
