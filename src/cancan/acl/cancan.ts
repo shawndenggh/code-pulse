@@ -1,6 +1,13 @@
 import CanCan from 'cancan';
 
-const cancan = new CanCan();
+class MyError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'MyError';
+  }
+}
+
+const cancan = new CanCan({ createError: () => new MyError('Permission denied') });
 
 export const _can = cancan.can;
 
