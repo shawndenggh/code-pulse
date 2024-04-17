@@ -1,17 +1,18 @@
-import {defineAbility} from "@casl/ability";
-import { Unit} from "../model/unit";
+import { defineAbility } from '@casl/ability';
+import { Unit } from '../model/unit';
 
-export default (unit: Unit) => defineAbility((can) => {
+export default (unit: Unit) =>
+  defineAbility((can) => {
     const isAdmin = unit.isAdmin();
 
     if (isAdmin) {
-        can('manage', 'all');
+      can('manage', 'all');
     }
 
     can('read', 'Node', {
-        permission: unit.permission()
+      permission: unit.permission(),
     });
-    can('update', 'Node', {authorId: unit.id});
+    can('update', 'Node', { authorId: unit.id });
     can('create', 'Node');
-    can('update', 'Node', {authorId: unit.id});
-});
+    can('delete', 'Node', { authorId: unit.id });
+  });

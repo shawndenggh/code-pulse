@@ -7,7 +7,7 @@
     "lint": "eslint .",
     "dev": "tsx watch src/index.ts",
     "fi": "tsx watch src/fractional-index/index.ts",
-    "casl": "tsx watch src/casl/index.ts",
+    "casl": "tsx watch src/casl/abilities.ts",
     "cancan": "tsx watch src/cancan/index.ts",
     "mobx": "tsx watch src/mobx/index.ts"
   },
