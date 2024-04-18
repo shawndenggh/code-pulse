@@ -38,8 +38,13 @@ class User {
   }
 
   async getPrivilege(nodeId: string): Promise<Privilege> {
-    const privileges = permissions.filter((p) => p.userId === this.id && p.nodeId === nodeId);
-    return Promise.resolve(privileges[0].privilege);
+    const memberships = await loadMemberships(nodeId);
+    const teams = await this.getTeams();
+    const roles = await this.getRoles();
+    const ids = [this.id, ...teams.map((t) => t.id), ...roles.map((r) => r.id)];
+    const privileges = memberships.filter((m) => ids.includes(m.userId)).map((m) => m.privilege);
+    // const privileges = permissions.filter((p) => p.userId === this.id && p.nodeId === nodeId);
+    return Promise.resolve(privileges[0]);
   }
 }
 
@@ -50,11 +55,6 @@ class Node {
   constructor(id: string, sharing: boolean) {
     this.id = id;
     this.sharing = sharing;
-  }
-
-  async getPrivileges(userId: number): Promise<Privilege> {
-    const privileges = permissions.filter((p) => p.userId === userId);
-    return Promise.resolve(privileges[0].privilege);
   }
 }
 
@@ -68,6 +68,15 @@ class Permission {
     this.nodeId = nodeId;
     this.privilege = privilege;
   }
+}
+
+async function loadMemberships(nodeId: string): Promise<Permission[]> {
+  const privileges = permissions.filter((p) => p.nodeId === nodeId);
+  // const output: Record<string, Privilege> = {};
+  // privileges.forEach((p) => {
+  //   output[p.userId] = p.privilege;
+  // });
+  return Promise.resolve(privileges);
 }
 
 class Database {
@@ -133,8 +142,8 @@ async function defineAbilityFor(user: User, nodeId: string): Promise<AppAbility>
   }
 
   // fetch this user's team and role
-  const teams = await user.getTeams();
-  const roles = await user.getRoles();
+  // const teams = await user.getTeams();
+  // const roles = await user.getRoles();
 
   // fetch node's privilege for this user
   const privilege = await user.getPrivilege(nodeId);
