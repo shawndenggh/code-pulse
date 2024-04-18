@@ -23,18 +23,22 @@ class Role {
 class User {
   id: number;
   isAdmin: boolean;
+  teams: Team[];
+  roles: Role[];
 
-  constructor(id: number, isAdmin: boolean) {
+  constructor(id: number, isAdmin: boolean, teams: Team[], roles: Role[]) {
     this.id = id;
     this.isAdmin = isAdmin;
+    this.teams = teams;
+    this.roles = roles;
   }
 
   async getTeams(): Promise<Team[]> {
-    return Promise.resolve([new Team(1, 'HR')]);
+    return Promise.resolve(this.teams);
   }
 
   async getRoles(): Promise<Role[]> {
-    return Promise.resolve([new Role(1, 'Sales')]);
+    return Promise.resolve(this.roles);
   }
 
   async getPrivilege(nodeId: string): Promise<Privilege> {
@@ -42,8 +46,8 @@ class User {
     const teams = await this.getTeams();
     const roles = await this.getRoles();
     const ids = [this.id, ...teams.map((t) => t.id), ...roles.map((r) => r.id)];
-    const privileges = memberships.filter((m) => ids.includes(m.userId)).map((m) => m.privilege);
-    // const privileges = permissions.filter((p) => p.userId === this.id && p.nodeId === nodeId);
+    // may be user has multiple privileges, so we need to pick the highest one
+    const privileges = memberships.filter((m) => ids.includes(m.visitorId)).map((m) => m.privilege);
     return Promise.resolve(privileges[0]);
   }
 }
@@ -59,12 +63,13 @@ class Node {
 }
 
 class Permission {
-  userId: number;
+  // user_id | team_id | role_id
+  visitorId: number;
   nodeId: string;
   privilege: Privilege;
 
   constructor(userId: number, nodeId: string, privilege: Privilege) {
-    this.userId = userId;
+    this.visitorId = userId;
     this.nodeId = nodeId;
     this.privilege = privilege;
   }
@@ -72,10 +77,6 @@ class Permission {
 
 async function loadMemberships(nodeId: string): Promise<Permission[]> {
   const privileges = permissions.filter((p) => p.nodeId === nodeId);
-  // const output: Record<string, Privilege> = {};
-  // privileges.forEach((p) => {
-  //   output[p.userId] = p.privilege;
-  // });
   return Promise.resolve(privileges);
 }
 
@@ -96,8 +97,6 @@ function or(...args: boolean[]) {
   return args.some(Boolean);
 }
 
-// const nodeActions = ['all', 'read', 'create', 'edit', 'update', 'delete', 'move', 'export'];
-
 type NodeActions = 'all' | 'read' | 'create' | 'edit' | 'update' | 'delete' | 'move' | 'export';
 type DatabaseActions = 'read' | 'update' | 'delete';
 
@@ -115,14 +114,16 @@ type DefinePermissions = (user: User, builder: AbilityBuilder<AppAbility>) => vo
 type Privilege = 'FULL_ACCESS' | 'CAN_EDIT' | 'CAN_VIEW';
 
 const rolePermissions: Record<Privilege, DefinePermissions> = {
-  CAN_VIEW(user, { can }) {
+  CAN_VIEW(user, { can, cannot }) {
+    cannot('all', Node);
+    cannot('edit', Node);
     can('read', Node);
   },
-  CAN_EDIT(user, { can }) {
+  CAN_EDIT(user, { can, cannot }) {
+    cannot('all', Node);
     can('edit', Node);
   },
   FULL_ACCESS(user, { can }) {
-    // 判断privileges中是否有user.id,并且权限为FULL_ACCESS
     can('all', Node);
   },
 };
@@ -137,7 +138,7 @@ async function defineAbilityFor(user: User, nodeId: string): Promise<AppAbility>
 
   // if user is admin, give full access
   if (user.isAdmin) {
-    builder.can('all', Node);
+    rolePermissions.FULL_ACCESS(user, builder);
     return builder.build({ resolveAction });
   }
 
@@ -147,6 +148,8 @@ async function defineAbilityFor(user: User, nodeId: string): Promise<AppAbility>
 
   // fetch node's privilege for this user
   const privilege = await user.getPrivilege(nodeId);
+
+  console.log(`current abilities for: ${user.id}, privilege: ${privilege}`);
 
   if (typeof rolePermissions[privilege] === 'function') {
     rolePermissions[privilege](user, builder);
@@ -160,32 +163,32 @@ async function defineAbilityFor(user: User, nodeId: string): Promise<AppAbility>
 // test
 
 const teams: Record<string, Team> = {
-  hr: new Team(1, 'HR'),
-  dev: new Team(2, 'Dev'),
+  hr: new Team(11, 'HR'),
+  dev: new Team(12, 'Dev'),
   product: new Team(3, 'Product'),
 };
 
 const roles: Record<string, Role> = {
-  sales: new Role(1, 'Sales'),
-  market: new Role(2, 'Market'),
+  sales: new Role(21, 'Sales'),
+  market: new Role(22, 'Market'),
 };
 
 const users: Record<string, User> = {
-  shawn: new User(1, true),
-  kelvin: new User(2, false),
-  benson: new User(3, false),
+  shawn: new User(1, true, [], []),
+  kelvin: new User(2, false, [teams.hr, teams.dev], [roles.sales, roles.market]),
+  benson: new User(3, false, [teams.product], [roles.market]),
 };
-
-// equal same as in permission table in database
-const permissions: Permission[] = [
-  new Permission(1, 'table-1', 'FULL_ACCESS'),
-  new Permission(2, 'table-1', 'CAN_EDIT'),
-  new Permission(3, 'table-1', 'CAN_VIEW'),
-];
 
 const shawn = users.shawn;
 const kelvin = users.kelvin;
 const benson = users.benson;
+
+// equal same as in permission table in database
+const permissions: Permission[] = [
+  new Permission(shawn.id, 'table-1', 'FULL_ACCESS'),
+  new Permission(kelvin.id, 'table-1', 'CAN_EDIT'),
+  new Permission(benson.id, 'table-1', 'CAN_VIEW'),
+];
 
 const target = new Node('table-1', false);
 
@@ -214,14 +217,14 @@ function serialize(ability: AppAbility, target: Node | Database): Record<string,
   return output;
 }
 
-console.log(`Shawn`);
+console.log(`Shawn - Admin and with full_access`);
 const abilityForShawn = await defineAbilityFor(shawn, target.id);
 console.log(serialize(abilityForShawn, target));
 
-console.log(`Kelvin`);
+console.log(`Kelvin - not admin and with can_edit`);
 const abilityForKelvin = await defineAbilityFor(kelvin, target.id);
 console.log(serialize(abilityForKelvin, target));
 
-console.log(`Benson`);
+console.log(`Benson - not admin and with can_view`);
 const abilityForBenson = await defineAbilityFor(benson, target.id);
 console.log(serialize(abilityForBenson, target));
