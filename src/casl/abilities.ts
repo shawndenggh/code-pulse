@@ -75,11 +75,6 @@ class Permission {
   }
 }
 
-async function loadMemberships(nodeId: string): Promise<Permission[]> {
-  const privileges = permissions.filter((p) => p.nodeId === nodeId);
-  return Promise.resolve(privileges);
-}
-
 class Database {
   // user_id => privilege
   privileges: Record<number, Privilege>;
@@ -97,11 +92,12 @@ function or(...args: boolean[]) {
   return args.some(Boolean);
 }
 
-type NodeActions = 'all' | 'read' | 'create' | 'edit' | 'update' | 'delete' | 'move' | 'export';
+type NodeActions = 'read' | 'create' | 'update' | 'delete' | 'move' | 'export' | 'grant' | 'share';
 type DatabaseActions = 'read' | 'update' | 'delete';
 
 type Actions = NodeActions | DatabaseActions;
 type Subjects = typeof Node | Node | typeof Database | Database;
+// type Subjects = 'Node' | 'Database';
 
 // const actions = ['update', 'manage', 'invite'] as const;
 // const subjects = ['User', 'all'] as const;
@@ -113,24 +109,28 @@ const createAppAbility = createMongoAbility as CreateAbility<AppAbility>;
 type DefinePermissions = (user: User, builder: AbilityBuilder<AppAbility>) => void;
 type Privilege = 'FULL_ACCESS' | 'CAN_EDIT' | 'CAN_VIEW';
 
-const rolePermissions: Record<Privilege, DefinePermissions> = {
+const aclPermissions: Record<Privilege, DefinePermissions> = {
   CAN_VIEW(user, { can, cannot }) {
-    cannot('all', Node);
-    cannot('edit', Node);
+    cannot('grant', Node);
+    cannot('delete', Node);
+    cannot('update', Node);
     can('read', Node);
   },
   CAN_EDIT(user, { can, cannot }) {
-    cannot('all', Node);
-    can('edit', Node);
+    cannot('grant', Node);
+    cannot('delete', Node);
+    can('update', Node);
   },
   FULL_ACCESS(user, { can }) {
-    can('all', Node);
+    can('delete', Node);
+    can('grant', Node);
   },
 };
 
 const resolveAction = createAliasResolver({
-  edit: ['update', 'read'],
-  all: ['create', 'edit', 'delete', 'move', 'export'],
+  read: ['share'],
+  update: ['read', 'create'],
+  delete: ['update', 'move', 'export'],
 });
 
 async function defineAbilityFor(user: User, nodeId: string): Promise<AppAbility> {
@@ -138,7 +138,9 @@ async function defineAbilityFor(user: User, nodeId: string): Promise<AppAbility>
 
   // if user is admin, give full access
   if (user.isAdmin) {
-    rolePermissions.FULL_ACCESS(user, builder);
+    // admin can grant privilege
+    builder.can('grant', Node);
+    aclPermissions.FULL_ACCESS(user, builder);
     return builder.build({ resolveAction });
   }
 
@@ -147,12 +149,13 @@ async function defineAbilityFor(user: User, nodeId: string): Promise<AppAbility>
   // const roles = await user.getRoles();
 
   // fetch node's privilege for this user
+  const node = await findNode(nodeId);
   const privilege = await user.getPrivilege(nodeId);
 
   console.log(`current abilities for: ${user.id}, privilege: ${privilege}`);
 
-  if (typeof rolePermissions[privilege] === 'function') {
-    rolePermissions[privilege](user, builder);
+  if (typeof aclPermissions[privilege] === 'function') {
+    aclPermissions[privilege](user, builder);
   } else {
     throw new Error(`Trying to use unknown role "${privilege}"`);
   }
@@ -183,12 +186,27 @@ const shawn = users.shawn;
 const kelvin = users.kelvin;
 const benson = users.benson;
 
+const nodes: Node[] = [new Node('table-1', false), new Node('table-2', false), new Node('table-3', false)];
+
+async function findNode(nodeId: string): Promise<Node> {
+  const found = nodes.find((n) => n.id === nodeId);
+  if (!found) {
+    throw new Error(`Node with id ${nodeId} not found`);
+  }
+  return Promise.resolve(found);
+}
+
 // equal same as in permission table in database
 const permissions: Permission[] = [
   new Permission(shawn.id, 'table-1', 'FULL_ACCESS'),
   new Permission(kelvin.id, 'table-1', 'CAN_EDIT'),
   new Permission(benson.id, 'table-1', 'CAN_VIEW'),
 ];
+
+async function loadMemberships(nodeId: string): Promise<Permission[]> {
+  const privileges = permissions.filter((p) => p.nodeId === nodeId);
+  return Promise.resolve(privileges);
+}
 
 const target = new Node('table-1', false);
 
