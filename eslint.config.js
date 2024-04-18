@@ -5,6 +5,8 @@ import prettierConfig from 'eslint-config-prettier';
 export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
+  ...tseslint.configs.stylisticTypeChecked,
+  ...tseslint.configs.strictTypeChecked,
   prettierConfig,
   {
     languageOptions: {
@@ -17,5 +19,11 @@ export default tseslint.config(
   {
     files: ['**/*.js'],
     extends: [tseslint.configs.disableTypeChecked],
+  },
+  {
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/restrict-template-expressions': 'off',
+    },
   }
 );
