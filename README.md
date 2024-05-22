@@ -1,6 +1,6 @@
 # Node-Pulse
 
-A nodejs learning
+A nodejs learning project
 
 ## Table of Contents
 
